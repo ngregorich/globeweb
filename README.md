@@ -1,8 +1,14 @@
 # GlobeThrottle
 
-A browser-based tool that uses Web Bluetooth to enable or disable the optional throttle on the Specialized Globe Haul ST / LT e-bike
+## Description
 
-**Use it at [globethrottle.experimentarea.com](https://globethrottle.experimentarea.com)**
+A browser-based tool that uses [Web Bluetooth](https://webbluetoothcg.github.io/web-bluetooth/) to enable or disable the optional [throttle](https://www.specialized.com/us/en/globe-throttle/p/220823) on the Specialized [Globe Haul](https://www.specialized.com/us/en/shop/bikes/electric-bikes/electric-hybrid-bikes/cargo-bikes/globe/globe-haul) ST / LT e-bike
+
+## Use It
+
+https://globethrottle.experimentarea.com
+
+## Disclaimer
 
 This is an unofficial, community developed tool. No affiliation with Specialized. Use at your own risk
 
