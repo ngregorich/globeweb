@@ -121,6 +121,15 @@ header h1 {
   gap: 0.75rem;
 }
 
+.btn-row {
+  display: flex;
+  gap: 0.75rem;
+}
+
+.btn-row button {
+  flex: 1;
+}
+
 button {
   font-family: inherit;
   font-size: 1rem;
@@ -256,7 +265,7 @@ details.instructions a {
     <p>This is an unofficial, community developed tool. No affiliation with Specialized. Use at your own risk</p>
 
     <h3>What is this?</h3>
-    <p>This is a browser-based tool that uses <a href="https://webbluetoothcg.github.io/web-bluetooth/" target="_blank" rel="noopener">Web Bluetooth</a> to connect to the Specialized <a href="https://www.specialized.com/us/en/shop/bikes/electric-bikes/electric-hybrid-bikes/cargo-bikes/globe/globe-haul" target="_blank" rel="noopener">Globe Haul</a> ST / LT e-bike in order to enable or disable the optional <a href="https://www.specialized.com/us/en/globe-throttle/p/220823" target="_blank" rel="noopener">throttle</a></p>
+    <p>This is a browser-based tool that uses <a href="https://webbluetoothcg.github.io/web-bluetooth/" target="_blank" rel="noopener">Web Bluetooth</a> to connect to the Specialized <a href="https://www.specialized.com/us/en/shop/bikes/electric-bikes/electric-hybrid-bikes/cargo-bikes/globe/globe-haul" target="_blank" rel="noopener">Globe Haul</a> ST / LT e-bike in order to enable or disable the optional <a href="https://www.specialized.com/us/en/globe-throttle/p/220823" target="_blank" rel="noopener">throttle</a> and switch display units between imperial and metric</p>
 
     <h3>What do I need?</h3>
     <ol>
@@ -275,11 +284,11 @@ details.instructions a {
       </li>
       <li>Push
         <ul>
-          <li><strong>Enable Throttle</strong></li>
-          <li><strong>Disable Throttle</strong></li>
+          <li><strong>Enable Throttle</strong> or <strong>Disable Throttle</strong></li>
+          <li><strong>Imperial</strong> or <strong>Metric</strong></li>
         </ul>
       </li>
-      <li>You can now
+      <li>Done, you can now
         <ul>
           <li>Click Disconnect</li>
           <li>Power off the bike</li>
@@ -300,8 +309,14 @@ details.instructions a {
 
   <div class="actions" id="actions">
     <button class="btn-primary" id="btnConnect" onclick="connect()">Connect to Globe Haul</button>
-    <button class="btn-success" id="btnEnable" onclick="setThrottle(true)" disabled>Enable Throttle</button>
-    <button class="btn-danger" id="btnDisable" onclick="setThrottle(false)" disabled>Disable Throttle</button>
+    <div class="btn-row">
+      <button class="btn-success" id="btnEnable" onclick="setThrottle(true)" disabled>Enable Throttle</button>
+      <button class="btn-danger" id="btnDisable" onclick="setThrottle(false)" disabled>Disable Throttle</button>
+    </div>
+    <div class="btn-row">
+      <button class="btn-outline" id="btnImperial" onclick="setUnits(true)" disabled>Imperial</button>
+      <button class="btn-outline" id="btnMetric" onclick="setUnits(false)" disabled>Metric</button>
+    </div>
     <button class="btn-outline" id="btnDisconnect" onclick="disconnect()" disabled>Disconnect</button>
   </div>
 </div>
@@ -332,6 +347,8 @@ function showConnected() {
   document.getElementById('btnConnect').disabled = true;
   document.getElementById('btnEnable').disabled = false;
   document.getElementById('btnDisable').disabled = false;
+  document.getElementById('btnImperial').disabled = false;
+  document.getElementById('btnMetric').disabled = false;
   document.getElementById('btnDisconnect').disabled = false;
 }
 
@@ -339,6 +356,8 @@ function showIdle() {
   document.getElementById('btnConnect').disabled = false;
   document.getElementById('btnEnable').disabled = true;
   document.getElementById('btnDisable').disabled = true;
+  document.getElementById('btnImperial').disabled = true;
+  document.getElementById('btnMetric').disabled = true;
   document.getElementById('btnDisconnect').disabled = true;
 }
 
@@ -460,6 +479,19 @@ async function setThrottle(enable) {
     await writeCmd([0x3E, 0x33, 0x34, 0x35], false);
 
     setStatus('Throttle ' + (enable ? 'enabled' : 'disabled'), 'success');
+  } catch (err) {
+    setStatus('Failed: ' + err.message, 'error');
+  } finally {
+    setButtonsDisabled(false);
+  }
+}
+
+async function setUnits(imperial) {
+  try {
+    setButtonsDisabled(true);
+    setStatus('Setting units to ' + (imperial ? 'imperial' : 'metric') + '…', 'busy');
+    await writeCmd([0x2C, imperial ? 0x01 : 0x00]);
+    setStatus('Units set to ' + (imperial ? 'imperial' : 'metric'), 'success');
   } catch (err) {
     setStatus('Failed: ' + err.message, 'error');
   } finally {
