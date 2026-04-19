@@ -1,4 +1,4 @@
-# GlobeThrottle
+# Globe Settings
 
 ## Description
 
